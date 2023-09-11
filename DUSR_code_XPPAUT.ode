@@ -1,0 +1,54 @@
+################################################
+# MODEL OF DOPAMINE ULTRADIAN SYNAPTIC REGULATION
+# DATE 2023-09-03 BY AN QI ZHANG
+################################################
+
+################################################
+#DECLARATION OF MODEL ODES
+################################################
+dD2/dt=(k*(D2tot-D2)*DA-a*D2)
+dDAT/dt=((1+(deltaT-1)/(1+exp(-kT*(D2-D0)))-DAT)/tauT)
+dVo/dt=(-c*Vo+b*F-kV*D2)
+
+################################################
+# DECLARATION OF AUXILIARY OUTPUT
+################################################
+F= Fmax/(1+exp((theta-Vo)/delta))
+DA=(alpha*F-beta*Km-kVmax*DAT)/(2*beta)+sqrt((alpha*F-beta*Km-kVmax*DAT)^2+4*beta*alpha*F*Km)/(2*beta)
+aux F=F
+aux DA=DA
+
+
+################################################
+# DECLARATION OF THE 17 MODEL PARAMETERS
+################################################
+par D2tot=0.1,beta=144,in0delta=0.18,in0kT=0.875,D0=0.04,in0c=0.362,Km=0.2,a=1.7,in0kVmax=0.263,in0b=0.12
+par deltaT=1.8
+par alpha=0.09,in0Fmax=1.5,in0theta=0.25
+par in0kV=0.273,in0k=0.1046
+par tauT=0.15
+
+b=in0b/10
+k=in0k*100
+c=in0c*10
+kT=in0kT*100
+theta=in0theta*100
+delta=in0delta*100
+Fmax=in0Fmax*36000
+kVmax=in0kVmax*36000
+kV=in0kV*36000
+
+
+################################################
+# INITIAL CONDITIONS
+################################################
+init D2=0.035,DAT=1.329,Vo=43.45
+
+################################################
+# INTEGRATOR SETTINGS
+################################################
+@ total=240,dt=.02
+@ bounds=100000
+@ maxstor=20000
+
+done
