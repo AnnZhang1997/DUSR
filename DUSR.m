@@ -1,7 +1,7 @@
 function [output]   = DUSR(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Written by An Qi Zhang in MATLAB R2020b
-% [output] = DUSR() => output = generates figure showing DA^ex oscillation
+% [output] = DUSR() => output = generates figure showing Fig1 oscillation
 % at the nominal period
 % [output] = DUSR('initial') => output = initial conditions in column vector
 % [output] = DUSR('states') => output = state names in cell-array
