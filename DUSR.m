@@ -6,7 +6,6 @@ function [output]   = DUSR(varargin)
 % [output] = DUSR('initial') => output = initial conditions in column vector
 % [output] = DUSR('states') => output = state names in cell-array
 % [output] = DUSR('parameters') => output = parameter names and values
-% [output] = DUSR(time,vars) => output = time derivatives in column vector
 %
 % [output] = DUSR(D2AR, DAT, V0) => output = DAex, F value computed from the state variables
 %
