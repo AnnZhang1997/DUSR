@@ -1,7 +1,8 @@
 function [output]   = DUSR(varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Written by An Qi Zhang in MATLAB R2020b
-%
+% [output] = DUSR() => output = generates figure showing DA^ex oscillation
+% at the nominal period
 % [output] = DUSR('initial') => output = initial conditions in column vector
 % [output] = DUSR('states') => output = state names in cell-array
 % [output] = DUSR('parameters') => output = parameter names and values
@@ -42,7 +43,36 @@ parameters = struct('alpha', 0.09, ...      uM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HANDLE VARIABLE INPUT ARGUMENTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if nargin == 1
+if nargin == 0
+    [t,x] = ode45( @(t,x) DUSR_ODE(t,x,parameters,0,0,0),...
+        [0 24*3],DUSR('initial'));
+    D2AR = x(:,1); TDA = x(:,2); V0 = x(:,3);
+    DAF = DUSR(D2AR, TDA, V0);
+    DAex = DAF(:,1); F = DAF(:,2); 
+    output = figure(); hold on;
+    
+    yyaxis left
+    pDA = plot(t,DAex,'-k','LineWidth', 2);
+    pD2 = plot(t,D2AR,'-k');
+    ylabel('$$D2_{\mathrm{AR}}$$, $$DA^{\mathrm{ex}}$$ ($\mu$M)','interpreter','latex')
+    ylim([0 0.15])
+    yticks([0 0.05 0.1 0.15]); yticklabels({'0','0.05','0.10','0.15'})
+    
+    yyaxis right
+    F = F./parameters.Fmax;
+    pDAT = plot(t,TDA,':k');
+    pF = plot(t,F,'--k');
+    ylabel('$$T_{\mathrm{DA}}$$, $$\frac{F}{F_{\mathrm{max}}}$$','interpreter','latex')
+    xlim([0 12]); ylim([0 2]); yticks([0 1 2])
+    
+    legend([pDA,pD2,pDAT,pF],{'$$DA^{\mathrm{ex}}$$','$$D2_{\mathrm{AR}}$$',...
+        '$$T_{\mathrm{DA}}$$','$$\frac{F}{F_{\mathrm{max}}}$$'},'Location','northoutside','Orientation','horizontal','interpreter','latex')
+    ax1 = gca; ax1.YAxis(1).Color = 'k'; ax1.YAxis(2).Color = 'k';
+    set(gca,'XTick',0:4:24) 
+    
+    xlabel('time (h)')
+    return
+elseif nargin == 1
 	if strcmp(varargin{1},'initial')
 		% Return state names in cell-array
 		x0 = [0.1 1.1 0];
@@ -199,4 +229,3 @@ function dxdt = DUSR_ODE(t, x, parameters, circShape, circAmp, tranSimAmp)
     dxdt(3) = dV0_dt;
     dxdt = dxdt(:);
 end
-
